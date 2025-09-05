@@ -1,0 +1,20 @@
+{
+  "pageTitle": "Create Beautiful Festival Greetings",
+  "pageDescription": "Create personalized festival greeting images in multiple languages",
+  "selectFestival": "Select Festival",
+  "selectTemplate": "Choose a Template",
+  "customizeMessage": "Customize Your Message",
+  "selectMessage": "Choose from pre-written messages:",
+  "customMessage": "Or write your own message:",
+  "enterCustomMessage": "Enter your festival message here...",
+  "wishesFrom": "Wishes From:",
+  "enterName": "Enter your name or family name",
+  "createImage": "Create Image",
+  "preview": "Preview",
+  "download": "Download",
+  "shareWhatsApp": "Share on WhatsApp",
+  "enterPhoneNumber": "Enter your WhatsApp number to download:",
+  "phoneNumber": "Phone Number",
+  "skip": "Skip",
+  "downloadAnyway": "Download Anyway"
+}

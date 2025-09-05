@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Custom styles for senior-friendly UI */
+.text-senior {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+@media (max-width: 640px) {
+  .text-senior {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+/* Template styles for image generation */
+.template-container {
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
