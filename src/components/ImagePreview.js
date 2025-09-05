@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { useTranslation } from 'next-i18next';
 
-const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBack }) => {
+const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBack, onImageGenerated, onImageDownload }) => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const templateRef = useRef(null);
@@ -27,6 +27,11 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
         const imageDataUrl = canvas.toDataURL('image/png');
         setGeneratedImage(imageDataUrl);
         setIsGenerating(false);
+        
+        // Track successful image generation
+        if (onImageGenerated) {
+          onImageGenerated();
+        }
       }, 100);
     } catch (error) {
       console.error('Image generation failed:', error);
@@ -41,38 +46,43 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
     link.download = `festival-greeting-${Date.now()}.png`;
     link.href = generatedImage;
     link.click();
+
+    // Track download
+    if (onImageDownload) {
+      onImageDownload();
+    }
   };
 
   const handleShare = async () => {
-  if (!generatedImage) return;
-  
-  try {
-    // Convert data URL to blob for sharing
-    const response = await fetch(generatedImage);
-    const blob = await response.blob();
-    const file = new File([blob], 'festival-greeting.png', { type: 'image/png' });
+    if (!generatedImage) return;
     
-    // Check if we can share files
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: 'Festival Greeting',
-        text: customization.message
-      });
-    } else {
-      // Fallback: open WhatsApp with just the text message
+    try {
+      // Convert data URL to blob for sharing
+      const response = await fetch(generatedImage);
+      const blob = await response.blob();
+      const file = new File([blob], 'festival-greeting.png', { type: 'image/png' });
+      
+      // Check if we can share files
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Festival Greeting',
+          text: customization.message
+        });
+      } else {
+        // Fallback: open WhatsApp with just the text message
+        const message = `${customization.message}\n\n- ${customization.wishesFrom}`;
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Sharing failed:', error);
+      // Fallback to WhatsApp with text only
       const message = `${customization.message}\n\n- ${customization.wishesFrom}`;
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }
-  } catch (error) {
-    console.error('Sharing failed:', error);
-    // Fallback to WhatsApp with text only
-    const message = `${customization.message}\n\n- ${customization.wishesFrom}`;
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  }
-};
+  };
 
   // Create the template with user's data
   const createTemplate = () => {
@@ -93,7 +103,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
     let emoji = '';
     
     // Different styles based on selected template
-    switch(selectedTemplate?.id) {
+    switch(selectedTemplate?.template_type) {
       case 1: // Golden Glow
         backgroundStyle = { background: 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)' };
         emoji = '🪔';
@@ -105,6 +115,18 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
       case 3: // Traditional Red
         backgroundStyle = { background: 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' };
         emoji = '🎊';
+        break;
+      case 4: // Elegant Blue
+        backgroundStyle = { background: 'linear-gradient(135deg, #3b82f6 0%, #4338ca 100%)' };
+        emoji = '🌟';
+        break;
+      case 5: // Rose Gold
+        backgroundStyle = { background: 'linear-gradient(135deg, #f472b6 0%, #e11d48 100%)' };
+        emoji = '🌸';
+        break;
+      case 6: // Classic Green
+        backgroundStyle = { background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' };
+        emoji = '🍃';
         break;
       default:
         backgroundStyle = { background: 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)' };
@@ -177,7 +199,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
             disabled={isGenerating || !generatedImage}
             className="px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-lg"
           >
-            {t('shareWhatsApp')}
+            Share Message
           </button>
 
           <button

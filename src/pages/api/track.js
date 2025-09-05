@@ -1,4 +1,4 @@
-import { dbHelpers } from '../../lib/db';
+import { supabase } from '../../lib/db';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -7,7 +7,17 @@ export default async function handler(req, res) {
     const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
     try {
-      await dbHelpers.trackInteraction(sessionId, action, data, userAgent, ipAddress);
+      const { error } = await supabase
+        .from('user_interactions')
+        .insert({
+          session_id: sessionId,
+          action,
+          data,
+          user_agent: userAgent,
+          ip_address: ipAddress
+        });
+      
+      if (error) throw error;
       res.status(200).json({ success: true });
     } catch (error) {
       console.error('Error tracking interaction:', error);
