@@ -17,88 +17,102 @@ const TemplateGallery = ({ selectedFestival, onTemplateSelect }) => {
       const response = await fetch(`/api/templates?festivalId=${selectedFestival.id}`);
       const data = await response.json();
       
-      // Transform database templates to match our UI expectations
       const transformedTemplates = data.map(template => ({
         id: template.id,
         name: template.name,
         template_type: template.template_type,
-        preview: createTemplatePreview(template.template_type, selectedFestival)
+        image_url: template.image_url,
+        preview: createTemplatePreview(template, selectedFestival)
       }));
       
       setTemplates(transformedTemplates);
     } catch (error) {
       console.error('Error fetching templates:', error);
-      // Fallback to empty array if API fails
       setTemplates([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const createTemplatePreview = (templateType, festival) => {
-    const baseStyle = "w-full h-48 flex flex-col items-center justify-center text-white p-4";
-    
+  const createTemplatePreview = (template, festival) => {
+    const cardStyle = "w-full h-80 bg-white rounded-lg shadow-lg overflow-hidden border-2 border-yellow-400";
+
+    return (
+      <div className={cardStyle}>
+        {/* Top Image Section */}
+        <div className="w-full h-48 overflow-hidden">
+          {template.image_url ? (
+            <img 
+              src={template.image_url} 
+              alt="Template decoration"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                console.error('Template preview image failed to load:', template.image_url);
+                e.target.style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className={`w-full h-full flex items-center justify-center ${getBackgroundClass(template.template_type)}`}>
+              <div className="text-4xl">
+                {getEmojiForType(template.template_type)}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Content Section */}
+        <div className="p-4 h-32 flex flex-col justify-between text-center">
+          {/* Festival Title */}
+          <h3 className="text-xl font-bold text-orange-700 mb-2" style={{fontFamily: 'Cardo, serif'}}>
+            {festival?.name?.en}
+          </h3>
+          
+          {/* Message Preview */}
+          <p className="text-sm text-gray-600 mb-2">
+            Your Message Here
+          </p>
+          
+          {/* Signature Preview */}
+          <p className="text-xs italic text-blue-900 font-semibold">
+            Your Family Name
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const getBackgroundClass = (templateType) => {
     switch(templateType) {
-      case 1: // Golden Glow
-        return (
-          <div className={`${baseStyle} bg-gradient-to-br from-yellow-400 to-orange-600`}>
-            <div className="text-2xl font-bold mb-2">🪔</div>
-            <div className="text-lg font-semibold">{festival?.name?.en}</div>
-            <div className="text-sm mt-2">Your Message Here</div>
-            <div className="text-xs mt-2 italic">- Your Family Name</div>
-          </div>
-        );
-      case 2: // Royal Purple
-        return (
-          <div className={`${baseStyle} bg-gradient-to-br from-purple-600 to-pink-600`}>
-            <div className="text-2xl font-bold mb-2">✨</div>
-            <div className="text-lg font-semibold">{festival?.name?.en}</div>
-            <div className="text-sm mt-2">Your Message Here</div>
-            <div className="text-xs mt-2 italic">- Your Family Name</div>
-          </div>
-        );
-      case 3: // Traditional Red
-        return (
-          <div className={`${baseStyle} bg-gradient-to-br from-red-500 to-orange-500`}>
-            <div className="text-2xl font-bold mb-2">🎊</div>
-            <div className="text-lg font-semibold">{festival?.name?.en}</div>
-            <div className="text-sm mt-2">Your Message Here</div>
-            <div className="text-xs mt-2 italic">- Your Family Name</div>
-          </div>
-        );
-      case 4: // Elegant Blue
-        return (
-            <div className={`${baseStyle} bg-gradient-to-br from-blue-500 to-indigo-700`}>
-            <div className="text-2xl font-bold mb-2">🌟</div>
-            <div className="text-lg font-semibold">{festival?.name?.en}</div>
-            <div className="text-sm mt-2">Your Message Here</div>
-            <div className="text-xs mt-2 italic">- Your Family Name</div>
-            </div>
-        );
-      case 5: // Rose Gold
-        return (
-            <div className={`${baseStyle} bg-gradient-to-br from-pink-400 to-rose-600`}>
-            <div className="text-2xl font-bold mb-2">🌸</div>
-            <div className="text-lg font-semibold">{festival?.name?.en}</div>
-            <div className="text-sm mt-2">Your Message Here</div>
-            <div className="text-xs mt-2 italic">- Your Family Name</div>
-            </div>
-        );
-      case 6: // Classic Green
-        return (
-            <div className={`${baseStyle} bg-gradient-to-br from-green-500 to-emerald-700`}>
-            <div className="text-2xl font-bold mb-2">🍃</div>
-            <div className="text-lg font-semibold">{festival?.name?.en}</div>
-            <div className="text-sm mt-2">Your Message Here</div>
-            <div className="text-xs mt-2 italic">- Your Family Name</div>
-            </div>
-        );  
+      case 1:
+      case 4: // Golden templates
+        return "bg-gradient-to-br from-yellow-400 to-orange-600";
+      case 2:
+      case 5: // Purple templates
+        return "bg-gradient-to-br from-purple-600 to-pink-600";
+      case 3:
+      case 6: // Red templates
+        return "bg-gradient-to-br from-red-500 to-orange-500";
+      case 7: // Dark template
+        return "bg-gradient-to-b from-gray-900 to-black";
       default:
-        return (
-          <div className={`${baseStyle} bg-gradient-to-br from-gray-400 to-gray-600`}>
-            <div className="text-lg font-semibold">Template Preview</div>
-          </div>
-        );
+        return "bg-gradient-to-br from-gray-400 to-gray-600";
+    }
+  };
+
+  const getEmojiForType = (templateType) => {
+    switch(templateType) {
+      case 1:
+      case 4:
+      case 7:
+        return "🪔";
+      case 2:
+      case 5:
+        return "✨";
+      case 3:
+      case 6:
+        return "🎊";
+      default:
+        return "🪔";
     }
   };
 
@@ -139,11 +153,11 @@ const TemplateGallery = ({ selectedFestival, onTemplateSelect }) => {
           <button
             key={template.id}
             onClick={() => onTemplateSelect(template)}
-            className="border-2 border-gray-200 rounded-lg overflow-hidden hover:border-orange-500 transition-colors"
+            className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             {template.preview}
-            <div className="p-4 bg-white">
-              <h3 className="font-semibold text-gray-800">{template.name}</h3>
+            <div className="mt-2 text-center">
+              <span className="text-sm font-medium text-gray-700">{template.name}</span>
             </div>
           </button>
         ))}

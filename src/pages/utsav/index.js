@@ -76,12 +76,14 @@ export default function UtsavPage() {
   };
 
   const handleTemplateSelect = (template) => {
+    console.log('Template selected with image:', template.image_url);
     setSelectedTemplate(template);
     setCurrentStep(STEPS.CUSTOMIZE);
     trackInteraction('template_select', { 
       templateId: template.id, 
       templateName: template.name,
-      templateType: template.template_type
+      templateType: template.template_type,
+      hasImage: !!template.image_url
     });
   };
 

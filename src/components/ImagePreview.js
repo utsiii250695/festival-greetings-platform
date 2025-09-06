@@ -5,34 +5,58 @@ import { useTranslation } from 'next-i18next';
 const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBack, onImageGenerated, onImageDownload }) => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [fullTemplate, setFullTemplate] = useState(null);
   const templateRef = useRef(null);
   const { t, i18n } = useTranslation('common');
 
   useEffect(() => {
-    generateImage();
-  }, []);
+    console.log('ImagePreview received template:', selectedTemplate);
+    console.log('Template image URL:', selectedTemplate?.image_url);
+    
+    const fetchTemplateData = async () => {
+      if (selectedTemplate?.id) {
+        try {
+          const response = await fetch(`/api/templates?festivalId=${selectedFestival.id}`);
+          const templates = await response.json();
+          const currentTemplate = templates.find(t => t.id === selectedTemplate.id);
+          setFullTemplate(currentTemplate);
+          console.log('Full template data fetched:', currentTemplate);
+        } catch (error) {
+          console.error('Error fetching template data:', error);
+        }
+      }
+    };
+
+    fetchTemplateData();
+  }, [selectedTemplate, selectedFestival]);
+
+  useEffect(() => {
+    if (fullTemplate) {
+      generateImage();
+    }
+  }, [fullTemplate]);
 
   const generateImage = async () => {
     setIsGenerating(true);
     try {
-      // Wait a moment for the DOM to render
       setTimeout(async () => {
         const canvas = await html2canvas(templateRef.current, {
           width: 400,
-          height: 400,
+          height: 600,
           scale: 2,
-          backgroundColor: null
+          backgroundColor: '#ffffff',
+          useCORS: true,
+          allowTaint: true
         });
         
         const imageDataUrl = canvas.toDataURL('image/png');
         setGeneratedImage(imageDataUrl);
         setIsGenerating(false);
         
-        // Track successful image generation
         if (onImageGenerated) {
           onImageGenerated();
         }
-      }, 100);
+      }, 500);
     } catch (error) {
       console.error('Image generation failed:', error);
       setIsGenerating(false);
@@ -47,7 +71,6 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
     link.href = generatedImage;
     link.click();
 
-    // Track download
     if (onImageDownload) {
       onImageDownload();
     }
@@ -57,12 +80,10 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
     if (!generatedImage) return;
     
     try {
-      // Convert data URL to blob for sharing
       const response = await fetch(generatedImage);
       const blob = await response.blob();
       const file = new File([blob], 'festival-greeting.png', { type: 'image/png' });
       
-      // Check if we can share files
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
@@ -70,80 +91,144 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           text: customization.message
         });
       } else {
-        // Fallback: open WhatsApp with just the text message
         const message = `${customization.message}\n\n- ${customization.wishesFrom}`;
         const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
       }
     } catch (error) {
       console.error('Sharing failed:', error);
-      // Fallback to WhatsApp with text only
       const message = `${customization.message}\n\n- ${customization.wishesFrom}`;
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }
   };
 
-  // Create the template with user's data
+  const getCardBackground = (templateType) => {
+    switch(templateType) {
+      case 1:
+      case 4: // Golden templates
+        return 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)';
+      case 2:
+      case 5: // Purple templates
+        return 'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)';
+      case 3:
+      case 6: // Red templates
+        return 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)';
+      case 7: // Dark template
+        return 'linear-gradient(180deg, #1a1a1a 0%, #000000 100%)';
+      default:
+        return 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)';
+    }
+  };
+
+  const getEmojiForType = (templateType) => {
+    switch(templateType) {
+      case 1:
+      case 4:
+      case 7:
+        return '🪔';
+      case 2:
+      case 5:
+        return '✨';
+      case 3:
+      case 6:
+        return '🎊';
+      default:
+        return '🪔';
+    }
+  };
+
   const createTemplate = () => {
-    const baseStyle = {
+    const cardStyle = {
       width: '400px',
-      height: '400px',
+      height: '600px',
+      backgroundColor: '#ffffff',
+      borderRadius: '15px',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+      overflow: 'hidden',
+      border: '2px solid #f0a500',
+      fontFamily: 'Cardo, serif',
       display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      padding: '20px',
-      fontFamily: 'Poppins, sans-serif',
-      textAlign: 'center'
+      flexDirection: 'column'
     };
 
-    let backgroundStyle = {};
-    let emoji = '';
-    
-    // Different styles based on selected template
-    switch(selectedTemplate?.template_type) {
-      case 1: // Golden Glow
-        backgroundStyle = { background: 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)' };
-        emoji = '🪔';
-        break;
-      case 2: // Royal Purple
-        backgroundStyle = { background: 'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)' };
-        emoji = '✨';
-        break;
-      case 3: // Traditional Red
-        backgroundStyle = { background: 'linear-gradient(135deg, #ef4444 0%, #f97316 100%)' };
-        emoji = '🎊';
-        break;
-      case 4: // Elegant Blue
-        backgroundStyle = { background: 'linear-gradient(135deg, #3b82f6 0%, #4338ca 100%)' };
-        emoji = '🌟';
-        break;
-      case 5: // Rose Gold
-        backgroundStyle = { background: 'linear-gradient(135deg, #f472b6 0%, #e11d48 100%)' };
-        emoji = '🌸';
-        break;
-      case 6: // Classic Green
-        backgroundStyle = { background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' };
-        emoji = '🍃';
-        break;
-      default:
-        backgroundStyle = { background: 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)' };
-        emoji = '🪔';
-    }
-
     return (
-      <div style={{...baseStyle, ...backgroundStyle}}>
-        <div style={{ fontSize: '48px', marginBottom: '10px' }}>{emoji}</div>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
-          {selectedFestival?.name?.[i18n.language] || selectedFestival?.name?.en}
+      <div style={cardStyle}>
+        {/* Top Image Section */}
+        <div style={{ width: '100%', height: '240px', overflow: 'hidden' }}>
+          {fullTemplate?.image_url ? (
+            <img 
+              src={fullTemplate.image_url}
+              alt="Festival decoration"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                display: 'block'
+              }}
+              onError={(e) => {
+                console.error('Image failed to load:', fullTemplate.image_url);
+                e.target.style.display = 'none';
+              }}
+              crossOrigin="anonymous"
+            />
+          ) : (
+            <div style={{
+              width: '100%',
+              height: '100%',
+              background: getCardBackground(selectedTemplate?.template_type),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '72px'
+            }}>
+              {getEmojiForType(selectedTemplate?.template_type)}
+            </div>
+          )}
         </div>
-        <div style={{ fontSize: '18px', marginBottom: '20px', lineHeight: '1.4' }}>
-          {customization.message}
-        </div>
-        <div style={{ fontSize: '16px', fontStyle: 'italic' }}>
-          - {customization.wishesFrom}
+        
+        {/* Content Section */}
+        <div style={{ 
+          padding: '30px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          textAlign: 'center'
+        }}>
+          {/* Festival Title */}
+          <h1 style={{
+            fontSize: '2.8rem',
+            color: '#d45c00',
+            margin: '0 0 20px 0',
+            fontWeight: '700',
+            fontFamily: 'Cardo, serif'
+          }}>
+            {selectedFestival?.name?.[i18n.language] || selectedFestival?.name?.en}
+          </h1>
+          
+          {/* Message Content */}
+          <div style={{
+            fontSize: '1.1rem',
+            color: '#333',
+            lineHeight: '1.6',
+            margin: '15px 0',
+            flex: 1
+          }}>
+            {customization.message}
+          </div>
+          
+          {/* Signature */}
+          <div style={{
+            marginTop: '30px',
+            fontStyle: 'italic',
+            fontWeight: '700',
+            color: '#0c1445',
+            fontSize: '1.1rem'
+          }}>
+            With love and light,<br/>
+            {customization.wishesFrom}
+          </div>
         </div>
       </div>
     );
@@ -156,7 +241,6 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
       </h2>
 
       <div className="text-center">
-        {/* Hidden template for image generation */}
         <div 
           ref={templateRef}
           style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
@@ -164,10 +248,9 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           {createTemplate()}
         </div>
 
-        {/* Preview display */}
-        <div className="inline-block mb-6 border rounded-lg overflow-hidden shadow-lg">
+        <div className="inline-block mb-6 rounded-lg overflow-hidden shadow-lg">
           {isGenerating ? (
-            <div className="w-96 h-96 flex items-center justify-center bg-gray-100">
+            <div className="w-96 h-[600px] flex items-center justify-center bg-gray-100">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
                 <p className="text-gray-600">Generating your image...</p>
@@ -177,14 +260,13 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
             <img 
               src={generatedImage} 
               alt="Generated festival greeting" 
-              className="w-96 h-96 object-cover"
+              className="w-96 h-[600px] object-cover"
             />
           ) : (
             createTemplate()
           )}
         </div>
 
-        {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={handleDownload}
