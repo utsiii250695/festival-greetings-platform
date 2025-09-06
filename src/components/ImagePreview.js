@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { useTranslation } from 'next-i18next';
+import { TemplateRenderer } from '../utils/templateRenderer';
 
 const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBack, onImageGenerated, onImageDownload }) => {
   const [generatedImage, setGeneratedImage] = useState(null);
@@ -139,6 +140,31 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
   };
 
   const createTemplate = () => {
+    // Check if this template has custom HTML/CSS (db-driven template)
+    if (fullTemplate?.hasCustomTemplate && fullTemplate.html_template && fullTemplate.css_styles) {
+      // Prepare variables for the template
+      const templateVariables = {
+        IMAGE_URL: fullTemplate.image_url || '',
+        FESTIVAL_NAME: selectedFestival?.name?.[i18n.language] || selectedFestival?.name?.en || 'Festival',
+        MESSAGE: customization.message || '',
+        SIGNATURE_PREFIX: 'With love and light,',
+        WISHES_FROM: customization.wishesFrom || ''
+      };
+
+      // Use TemplateRenderer to create the dynamic template
+      const renderedHtml = TemplateRenderer.renderTemplate(
+        fullTemplate.html_template,
+        fullTemplate.css_styles,
+        templateVariables
+      );
+
+      // Return the rendered template as a div with dangerouslySetInnerHTML
+      if (renderedHtml) {
+        return <div dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
+      }
+    }
+
+    // Fallback to the original hardcoded template for templates without custom HTML/CSS
     const cardStyle = {
       width: '400px',
       height: '600px',

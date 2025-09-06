@@ -22,6 +22,10 @@ const TemplateGallery = ({ selectedFestival, onTemplateSelect }) => {
         name: template.name,
         template_type: template.template_type,
         image_url: template.image_url,
+        html_template: template.html_template,
+        css_styles: template.css_styles,
+        variables: template.variables,
+        hasCustomTemplate: template.hasCustomTemplate,
         preview: createTemplatePreview(template, selectedFestival)
       }));
       

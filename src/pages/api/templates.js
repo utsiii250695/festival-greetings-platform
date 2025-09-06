@@ -1,4 +1,4 @@
-import { dbHelpers } from '../../lib/db';
+import { supabase } from '../../lib/db';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
@@ -9,8 +9,52 @@ export default async function handler(req, res) {
     }
 
     try {
-      const templates = await dbHelpers.getTemplates(festivalId);
-      res.status(200).json(templates);
+      // Fetch templates with their variables
+      const { data: templates, error: templatesError } = await supabase
+        .from('templates')
+        .select(`
+          id,
+          name,
+          template_type,
+          image_url,
+          html_template,
+          css_styles,
+          is_active,
+          display_order
+        `)
+        .eq('festival_id', festivalId)
+        .eq('is_active', true)
+        .order('display_order');
+
+      if (templatesError) throw templatesError;
+
+      // Fetch variables for all templates
+      const templateIds = templates.map(t => t.id);
+      const { data: variables, error: variablesError } = await supabase
+        .from('template_variables')
+        .select('*')
+        .in('template_id', templateIds)
+        .order('display_order');
+
+      if (variablesError) throw variablesError;
+
+      // Group variables by template_id
+      const variablesByTemplate = variables.reduce((acc, variable) => {
+        if (!acc[variable.template_id]) {
+          acc[variable.template_id] = [];
+        }
+        acc[variable.template_id].push(variable);
+        return acc;
+      }, {});
+
+      // Attach variables to templates
+      const templatesWithVariables = templates.map(template => ({
+        ...template,
+        variables: variablesByTemplate[template.id] || [],
+        hasCustomTemplate: !!(template.html_template && template.css_styles)
+      }));
+
+      res.status(200).json(templatesWithVariables);
     } catch (error) {
       console.error('Error fetching templates:', error);
       res.status(500).json({ error: 'Failed to fetch templates' });

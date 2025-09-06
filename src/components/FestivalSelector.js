@@ -1,26 +1,55 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 
 const FestivalSelector = ({ onFestivalSelect }) => {
   const { t, i18n } = useTranslation('common');
+  const [festivals, setFestivals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // For now, we'll use hardcoded festivals. Later we'll connect to database
-  const festivals = [
-    {
-      id: 1,
-      name: { en: "Diwali", hi: "दीवाली", gu: "દિવાળી" },
-      description: { en: "Festival of Lights", hi: "रोशनी का त्योहार", gu: "પ્રકાશનો તહેવાર" }
-    },
-    {
-      id: 2,
-      name: { en: "Dhanteras", hi: "धनतेरस", gu: "ધનતેરસ" },
-      description: { en: "Festival of Wealth", hi: "धन का त्योहार", gu: "ધનનો તહેવાર" }
-    },
-    {
-      id: 3,
-      name: { en: "Navratri", hi: "नवरात्रि", gu: "નવરાત્રી" },
-      description: { en: "Nine Nights Festival", hi: "नौ रातों का त्योहार", gu: "નવ રાત્રિનો તહેવાર" }
+  useEffect(() => {
+    fetchFestivals();
+  }, []);
+
+  const fetchFestivals = async () => {
+    try {
+      const response = await fetch('/api/festivals');
+      const data = await response.json();
+      setFestivals(data);
+    } catch (error) {
+      console.error('Error fetching festivals:', error);
+      // Fallback to empty array if API fails
+      setFestivals([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+          {t('selectFestival')}
+        </h1>
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+        </div>
+        <p className="text-center mt-4 text-gray-600">Loading festivals...</p>
+      </div>
+    );
+  }
+
+  if (festivals.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+          {t('selectFestival')}
+        </h1>
+        <div className="text-center">
+          <p className="text-gray-600">No festivals available at the moment.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
