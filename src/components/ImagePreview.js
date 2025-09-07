@@ -42,9 +42,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
     try {
       setTimeout(async () => {
         const canvas = await html2canvas(templateRef.current, {
-          width: 400,
-          height: 600,
-          scale: 2,
+          scale: 1,
           backgroundColor: '#ffffff',
           useCORS: true,
           allowTaint: true
@@ -286,10 +284,12 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
             <img 
               src={generatedImage} 
               alt="Generated festival greeting" 
-              className="w-96 h-[600px] object-cover"
+              className="max-w-sm max-h-[800px] object-contain"
             />
           ) : (
-            createTemplate()
+            <div className="max-w-sm max-h-[800px] flex items-center justify-center">
+              {createTemplate()}
+            </div>
           )}
         </div>
 
