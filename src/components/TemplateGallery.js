@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
+import { TemplateRenderer } from '../utils/templateRenderer';
 
 const TemplateGallery = ({ selectedFestival, onTemplateSelect }) => {
   const { t } = useTranslation('common');
@@ -39,6 +40,43 @@ const TemplateGallery = ({ selectedFestival, onTemplateSelect }) => {
   };
 
   const createTemplatePreview = (template, festival) => {
+    // If template has custom HTML/CSS, render the actual template
+    if (template.hasCustomTemplate && template.html_template && template.css_styles) {
+      const sampleVariables = {
+        IMAGE_URL: template.image_url || '',
+        FESTIVAL_NAME: festival?.name?.en || 'Festival',
+        MESSAGE: 'May this festival bring joy, prosperity and happiness to your family. Wishing you all the divine blessings!',
+        WISHES_FROM: 'The Sharma Family'
+      };
+
+      const renderedHtml = TemplateRenderer.renderTemplate(
+        template.html_template,
+        template.css_styles,
+        sampleVariables
+      );
+
+      if (renderedHtml) {
+        // Calculate scale to fit 320px width (1080px * scale = 320px)
+        const scale = 320 / 1080;
+        
+        return (
+          <div className="w-80 h-80 bg-gray-100 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-400 relative flex items-center justify-center">
+            <div 
+              className="absolute"
+              style={{ 
+                width: '1080px',
+                height: '1350px',
+                transform: `scale(${scale})`,
+                transformOrigin: 'center center'
+              }}
+              dangerouslySetInnerHTML={{ __html: renderedHtml }}
+            />
+          </div>
+        );
+      }
+    }
+
+    // Fallback for templates without custom HTML/CSS
     const cardStyle = "w-full h-80 bg-white rounded-lg shadow-lg overflow-hidden border-2 border-yellow-400";
 
     return (
@@ -152,18 +190,19 @@ const TemplateGallery = ({ selectedFestival, onTemplateSelect }) => {
       <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
         {t('selectTemplate')}
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-wrap justify-center gap-8">
         {templates.map((template) => (
-          <button
-            key={template.id}
-            onClick={() => onTemplateSelect(template)}
-            className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500"
-          >
-            {template.preview}
-            <div className="mt-2 text-center">
-              <span className="text-sm font-medium text-gray-700">{template.name}</span>
+          <div key={template.id} className="text-center">
+            <button
+              onClick={() => onTemplateSelect(template)}
+              className="hover:shadow-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-lg"
+            >
+              {template.preview}
+            </button>
+            <div className="mt-4 text-center">
+              <span className="text-lg font-semibold text-gray-800">{template.name}</span>
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>

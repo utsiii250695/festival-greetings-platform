@@ -36,8 +36,17 @@ export class TemplateRenderer {
       console.warn('Unreplaced variables found:', unreplacedVars);
     }
 
+    // Create a unique class prefix for scoping
+    const uniqueId = `template-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Scope the CSS to avoid conflicts
+    const scopedCss = cssStyles.replace(/\./g, `.${uniqueId} .`);
+    
+    // Wrap HTML in scoped container
+    const scopedHtml = `<div class="${uniqueId}">${processedHtml}</div>`;
+    
     // Combine CSS and HTML
-    return `<style>${cssStyles}</style>${processedHtml}`;
+    return `<style>${scopedCss}</style>${scopedHtml}`;
   }
 
   /**
