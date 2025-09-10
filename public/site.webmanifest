@@ -1,0 +1,23 @@
+{
+  "name": "Festival Greetings - Utsav",
+  "short_name": "Utsav",
+  "description": "Create beautiful festival greeting cards for Indian festivals like Diwali, Navratri, and Dhanteras",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#F59E0B",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/utsav",
+  "scope": "/",
+  "categories": ["lifestyle", "social", "productivity"]
+}
