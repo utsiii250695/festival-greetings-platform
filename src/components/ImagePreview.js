@@ -308,18 +308,18 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
             </div>
           )}
 
-          {/* Fixed size container to prevent layout shifts */}
-          <div className="w-96 h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
+          {/* Container that adapts to content */}
+          <div className="flex items-center justify-center min-h-[400px]">
             {/* Show generated image when ready */}
             {generatedImage && !isGenerating ? (
               <img
                 src={generatedImage}
                 alt="Generated festival greeting"
-                className="max-w-sm max-h-[800px] object-contain transition-opacity duration-500 opacity-100"
+                className="max-w-sm max-h-[800px] object-contain transition-opacity duration-500 opacity-100 rounded-lg shadow-md"
               />
             ) : (
-              /* Placeholder during loading */
-              <div className="w-full h-full flex items-center justify-center opacity-20">
+              /* Placeholder during loading - hidden behind overlay */
+              <div className="w-80 h-[500px] bg-gray-50 rounded-lg flex items-center justify-center opacity-20">
                 <div className="text-gray-400 text-center">
                   <div className="text-4xl mb-2">🎨</div>
                   <p>Your card will appear here</p>
