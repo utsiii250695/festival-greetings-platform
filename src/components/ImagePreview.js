@@ -5,8 +5,9 @@ import { TemplateRenderer } from '../utils/templateRenderer';
 
 const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBack, onImageGenerated, onImageDownload }) => {
   const [generatedImage, setGeneratedImage] = useState(null);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(true);
   const [fullTemplate, setFullTemplate] = useState(null);
+  const [isLoadingTemplate, setIsLoadingTemplate] = useState(true);
   const templateRef = useRef(null);
   const { t, i18n } = useTranslation('common');
 
@@ -16,6 +17,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
     
     const fetchTemplateData = async () => {
       if (selectedTemplate?.id) {
+        setIsLoadingTemplate(true);
         try {
           const response = await fetch(`/api/templates?festivalId=${selectedFestival.id}`);
           const templates = await response.json();
@@ -24,6 +26,8 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           console.log('Full template data fetched:', currentTemplate);
         } catch (error) {
           console.error('Error fetching template data:', error);
+        } finally {
+          setIsLoadingTemplate(false);
         }
       }
     };
@@ -33,12 +37,14 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
 
   useEffect(() => {
     if (fullTemplate) {
+      // Set loading immediately to prevent showing dummy template
+      setIsGenerating(true);
       generateImage();
     }
   }, [fullTemplate]);
 
   const generateImage = async () => {
-    setIsGenerating(true);
+    // Loading state is already set in useEffect, no need to set again
     try {
       setTimeout(async () => {
         const canvas = await html2canvas(templateRef.current, {
@@ -272,25 +278,55 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           {createTemplate()}
         </div>
 
-        <div className="inline-block mb-6 rounded-lg overflow-hidden shadow-lg">
-          {isGenerating ? (
-            <div className="w-96 h-[600px] flex items-center justify-center bg-gray-100">
+        <div className="inline-block mb-6 rounded-lg overflow-hidden shadow-lg relative">
+          {/* Show loader during template fetch AND image generation */}
+          {(isLoadingTemplate || isGenerating) && (
+            <div className="absolute inset-0 bg-white bg-opacity-95 backdrop-blur-sm z-20 flex items-center justify-center">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Generating your image...</p>
+                <div className="relative">
+                  {/* Animated festival card mockup */}
+                  <div className="w-24 h-36 bg-gradient-to-br from-orange-200 to-pink-200 rounded-lg mb-4 mx-auto border-2 border-orange-300 animate-pulse">
+                    <div className="w-full h-16 bg-gradient-to-br from-orange-300 to-pink-300 rounded-t-md"></div>
+                    <div className="p-2 space-y-1">
+                      <div className="h-2 bg-orange-300 rounded animate-pulse"></div>
+                      <div className="h-1.5 bg-orange-200 rounded animate-pulse"></div>
+                      <div className="h-1.5 bg-orange-200 rounded w-2/3 animate-pulse"></div>
+                    </div>
+                  </div>
+                  {/* Spinning glow effect */}
+                  <div className="absolute inset-0 rounded-lg border-2 border-orange-400 animate-spin" style={{ animationDuration: '3s' }}></div>
+                </div>
+                <p className="text-gray-700 font-medium mt-2">
+                  {isLoadingTemplate ? 'Preparing your template...' : 'Creating your beautiful card...'}
+                </p>
+                <div className="flex justify-center mt-2 space-x-1">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
               </div>
             </div>
-          ) : generatedImage ? (
-            <img 
-              src={generatedImage} 
-              alt="Generated festival greeting" 
-              className="max-w-sm max-h-[800px] object-contain"
-            />
-          ) : (
-            <div className="max-w-sm max-h-[800px] flex items-center justify-center">
-              {createTemplate()}
-            </div>
           )}
+
+          {/* Fixed size container to prevent layout shifts */}
+          <div className="w-96 h-[600px] flex items-center justify-center bg-gray-50 rounded-lg">
+            {/* Show generated image when ready */}
+            {generatedImage && !isGenerating ? (
+              <img
+                src={generatedImage}
+                alt="Generated festival greeting"
+                className="max-w-sm max-h-[800px] object-contain transition-opacity duration-500 opacity-100"
+              />
+            ) : (
+              /* Placeholder during loading */
+              <div className="w-full h-full flex items-center justify-center opacity-20">
+                <div className="text-gray-400 text-center">
+                  <div className="text-4xl mb-2">🎨</div>
+                  <p>Your card will appear here</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
