@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { v4 as uuidv4 } from 'uuid';
 import LanguageSelector from '../../components/LanguageSelector';
@@ -18,14 +19,25 @@ const STEPS = {
 };
 
 export default function UtsavPage() {
-  const [currentStep, setCurrentStep] = useState(STEPS.LANGUAGE);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const router = useRouter();
+  const { lang } = router.query;
+
+  const [currentStep, setCurrentStep] = useState(lang ? STEPS.FESTIVAL : STEPS.LANGUAGE);
+  const [selectedLanguage, setSelectedLanguage] = useState(lang || 'en');
   const [selectedFestival, setSelectedFestival] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [customization, setCustomization] = useState(null);
   const [sessionId] = useState(() => uuidv4());
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const { t } = useTranslation('common');
+
+  // Handle language parameter from homepage
+  useEffect(() => {
+    if (lang && lang !== selectedLanguage) {
+      setSelectedLanguage(lang);
+      setCurrentStep(STEPS.FESTIVAL);
+    }
+  }, [lang, selectedLanguage]);
 
   // Track user interactions with duplicate prevention
   const trackInteraction = async (action, data) => {

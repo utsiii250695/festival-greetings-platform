@@ -4,12 +4,19 @@ const { i18n } = require('./next-i18next.config');
 const nextConfig = {
   reactStrictMode: true,
   i18n,
-  async rewrites() {
+  async redirects() {
     return [
+      // Redirect festival URLs without locale to default locale (en)
       {
-        source: '/',
-        destination: '/utsav'
-      }
+        source: '/festival',
+        destination: '/en/festival',
+        permanent: false,
+      },
+      {
+        source: '/festival/:path+',
+        destination: '/en/festival/:path+',
+        permanent: false,
+      },
     ];
   },
 };
