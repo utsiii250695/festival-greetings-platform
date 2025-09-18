@@ -265,28 +265,28 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+      <h2 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8 text-gray-800">
         {t('preview')}
       </h2>
 
       <div className="text-center">
-        <div 
+        <div
           ref={templateRef}
           style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
         >
           {createTemplate()}
         </div>
 
-        <div className="inline-block mb-6 rounded-lg overflow-hidden shadow-lg relative">
+        <div className="inline-block mb-6 rounded-lg overflow-hidden shadow-lg relative w-full max-w-lg mx-auto">
           {/* Show loader during template fetch AND image generation */}
           {(isLoadingTemplate || isGenerating) && (
             <div className="absolute inset-0 bg-white bg-opacity-95 backdrop-blur-sm z-20 flex items-center justify-center">
-              <div className="text-center">
+              <div className="text-center px-4">
                 <div className="relative">
                   {/* Animated festival card mockup */}
-                  <div className="w-24 h-36 bg-gradient-to-br from-orange-200 to-pink-200 rounded-lg mb-4 mx-auto border-2 border-orange-300 animate-pulse">
-                    <div className="w-full h-16 bg-gradient-to-br from-orange-300 to-pink-300 rounded-t-md"></div>
+                  <div className="w-20 h-32 sm:w-24 sm:h-36 bg-gradient-to-br from-orange-200 to-pink-200 rounded-lg mb-4 mx-auto border-2 border-orange-300 animate-pulse">
+                    <div className="w-full h-12 sm:h-16 bg-gradient-to-br from-orange-300 to-pink-300 rounded-t-md"></div>
                     <div className="p-2 space-y-1">
                       <div className="h-2 bg-orange-300 rounded animate-pulse"></div>
                       <div className="h-1.5 bg-orange-200 rounded animate-pulse"></div>
@@ -296,7 +296,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
                   {/* Spinning glow effect */}
                   <div className="absolute inset-0 rounded-lg border-2 border-orange-400 animate-spin" style={{ animationDuration: '3s' }}></div>
                 </div>
-                <p className="text-gray-700 font-medium mt-2">
+                <p className="text-gray-700 font-medium mt-2 text-sm sm:text-base">
                   {isLoadingTemplate ? 'Preparing your template...' : 'Creating your beautiful card...'}
                 </p>
                 <div className="flex justify-center mt-2 space-x-1">
@@ -309,31 +309,31 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           )}
 
           {/* Container that adapts to content */}
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
             {/* Show generated image when ready */}
             {generatedImage && !isGenerating ? (
               <img
                 src={generatedImage}
                 alt="Generated festival greeting"
-                className="max-w-sm max-h-[800px] object-contain transition-opacity duration-500 opacity-100 rounded-lg shadow-md"
+                className="w-full max-w-xs sm:max-w-sm max-h-[600px] sm:max-h-[800px] object-contain transition-opacity duration-500 opacity-100 rounded-lg shadow-md"
               />
             ) : (
               /* Placeholder during loading - hidden behind overlay */
-              <div className="w-80 h-[500px] bg-gray-50 rounded-lg flex items-center justify-center opacity-20">
+              <div className="w-full max-w-xs sm:w-80 h-[400px] sm:h-[500px] bg-gray-50 rounded-lg flex items-center justify-center opacity-20">
                 <div className="text-gray-400 text-center">
-                  <div className="text-4xl mb-2">🎨</div>
-                  <p>Your card will appear here</p>
+                  <div className="text-3xl sm:text-4xl mb-2">🎨</div>
+                  <p className="text-sm sm:text-base">Your card will appear here</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
           <button
             onClick={handleDownload}
             disabled={isGenerating || !generatedImage}
-            className="px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-lg"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-base sm:text-lg"
           >
             {t('download')}
           </button>
@@ -341,14 +341,14 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           <button
             onClick={handleShare}
             disabled={isGenerating || !generatedImage}
-            className="px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-lg"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-base sm:text-lg"
           >
             Share Message
           </button>
 
           <button
             onClick={onBack}
-            className="px-8 py-4 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors text-lg"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors text-base sm:text-lg"
           >
             Edit Message
           </button>
@@ -356,13 +356,13 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
 
         {/* Navratri Special Feature */}
         {selectedFestival?.slug === 'navratri' && (
-          <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200 shadow-lg">
+          <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200 shadow-lg mx-4 sm:mx-0">
             <div className="text-center">
-              <div className="text-4xl mb-3">🎭✨</div>
-              <h3 className="text-xl font-bold text-purple-800 mb-2">
+              <div className="text-3xl sm:text-4xl mb-3">🎭✨</div>
+              <h3 className="text-lg sm:text-xl font-bold text-purple-800 mb-2">
                 Discover the Sacred Journey of Navratri
               </h3>
-              <p className="text-purple-600 mb-4">
+              <p className="text-sm sm:text-base text-purple-600 mb-4">
                 Explore the spiritual significance, stories, and celebrations of each of the 9 divine nights
               </p>
               <button
@@ -370,7 +370,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
                   const userLang = i18n.language || 'en';
                   window.open(`/navratri-celebration?lang=${userLang}`, '_blank');
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm sm:text-base"
               >
                 🪔 Learn About the 9 Sacred Days
               </button>
