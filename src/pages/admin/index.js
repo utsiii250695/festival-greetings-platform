@@ -32,6 +32,23 @@ export default function AdminDashboard() {
     }
   };
 
+  // Function to convert language codes to readable names
+  const getLanguageName = (langCode) => {
+    // Normalize all English variants to just "English"
+    if (langCode && langCode.startsWith('en')) {
+      return 'English';
+    }
+
+    const languageMap = {
+      'hi': 'Hindi',
+      'hi-IN': 'Hindi',
+      'gu': 'Gujarati',
+      'gu-IN': 'Gujarati',
+      'unknown': 'Unknown'
+    };
+    return languageMap[langCode] || langCode;
+  };
+
   const calculateStats = (data) => {
     const sessions = [...new Set(data.map(item => item.session_id))];
     const totalSessions = sessions.length;
@@ -49,7 +66,8 @@ export default function AdminDashboard() {
     const languages = {};
     data.filter(item => item.action === 'language_select').forEach(item => {
       const lang = item.data?.language || 'unknown';
-      languages[lang] = (languages[lang] || 0) + 1;
+      const displayName = getLanguageName(lang);
+      languages[displayName] = (languages[displayName] || 0) + 1;
     });
 
     // Festival preferences
@@ -277,7 +295,13 @@ export default function AdminDashboard() {
                             {item.data ? (
                               Object.entries(item.data).map(([key, value]) => (
                                 <span key={key} className="mr-2">
-                                  {key}: {typeof value === 'object' ? JSON.stringify(value) : value}
+                                  {key}: {
+                                    typeof value === 'object'
+                                      ? JSON.stringify(value)
+                                      : key === 'language'
+                                        ? getLanguageName(value)
+                                        : value
+                                  }
                                 </span>
                               ))
                             ) : (

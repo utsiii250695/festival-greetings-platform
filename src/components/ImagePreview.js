@@ -337,7 +337,7 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
           >
             {t('download')}
           </button>
-          
+
           <button
             onClick={handleShare}
             disabled={isGenerating || !generatedImage}
@@ -353,6 +353,30 @@ const ImagePreview = ({ selectedTemplate, selectedFestival, customization, onBac
             Edit Message
           </button>
         </div>
+
+        {/* Navratri Special Feature */}
+        {selectedFestival?.slug === 'navratri' && (
+          <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200 shadow-lg">
+            <div className="text-center">
+              <div className="text-4xl mb-3">🎭✨</div>
+              <h3 className="text-xl font-bold text-purple-800 mb-2">
+                Discover the Sacred Journey of Navratri
+              </h3>
+              <p className="text-purple-600 mb-4">
+                Explore the spiritual significance, stories, and celebrations of each of the 9 divine nights
+              </p>
+              <button
+                onClick={() => {
+                  const userLang = i18n.language || 'en';
+                  window.open(`/navratri-celebration?lang=${userLang}`, '_blank');
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+              >
+                🪔 Learn About the 9 Sacred Days
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

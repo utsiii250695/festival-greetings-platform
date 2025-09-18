@@ -128,8 +128,20 @@ export default async function handler(req, res) {
       // Popular festivals analysis
       const festivalCounts = {};
       popularFestivalsResult.data?.forEach(row => {
-        const festivalName = row.data?.festivalName;
-        if (festivalName) {
+        // Handle both direct data structure and nested data structure
+        let festivalName;
+        if (typeof row.data === 'string') {
+          try {
+            const parsedData = JSON.parse(row.data);
+            festivalName = parsedData.festivalName || parsedData.name;
+          } catch (e) {
+            festivalName = row.data;
+          }
+        } else if (typeof row.data === 'object' && row.data !== null) {
+          festivalName = row.data.festivalName || row.data.name;
+        }
+
+        if (festivalName && typeof festivalName === 'string') {
           festivalCounts[festivalName] = (festivalCounts[festivalName] || 0) + 1;
         }
       });
@@ -142,8 +154,20 @@ export default async function handler(req, res) {
       // Popular templates analysis
       const templateCounts = {};
       popularTemplatesResult.data?.forEach(row => {
-        const templateName = row.data?.templateName;
-        if (templateName) {
+        // Handle both direct data structure and nested data structure
+        let templateName;
+        if (typeof row.data === 'string') {
+          try {
+            const parsedData = JSON.parse(row.data);
+            templateName = parsedData.templateName || parsedData.name;
+          } catch (e) {
+            templateName = row.data;
+          }
+        } else if (typeof row.data === 'object' && row.data !== null) {
+          templateName = row.data.templateName || row.data.name;
+        }
+
+        if (templateName && typeof templateName === 'string') {
           templateCounts[templateName] = (templateCounts[templateName] || 0) + 1;
         }
       });
