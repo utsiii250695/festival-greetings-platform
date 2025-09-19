@@ -251,8 +251,53 @@ export default function NavratriCelebration() {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
         {/* Header */}
         <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-purple-500 to-pink-500">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            {/* Mobile Header */}
+            <div className="lg:hidden">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={() => window.close()}
+                  className="flex items-center px-3 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-all duration-200 border border-purple-200 text-sm"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  {t.back}
+                </button>
+
+                {/* Language Selector */}
+                <div className="relative">
+                  <select
+                    value={currentLang}
+                    onChange={(e) => {
+                      setCurrentLang(e.target.value);
+                      const newQuery = { ...router.query, lang: e.target.value };
+                      router.push({ pathname: router.pathname, query: newQuery }, undefined, { shallow: true });
+                    }}
+                    className="appearance-none bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 text-purple-700 px-3 py-2 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium text-sm"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.code} value={lang.code}>
+                        {lang.nativeName}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-600 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  🎭 {t.title} 🎭
+                </h1>
+                <p className="text-gray-600 mt-2 text-sm sm:text-base">{t.subtitle}</p>
+              </div>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden lg:flex items-center justify-between">
               {/* Left side - Back button and Language selector */}
               <div className="flex items-center space-x-4">
                 <button
@@ -302,59 +347,59 @@ export default function NavratriCelebration() {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
           {/* Introduction */}
-          <div className="text-center mb-12">
-            <div className="inline-block p-6 bg-white rounded-2xl shadow-lg border border-purple-200 mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-block p-4 sm:p-6 bg-white rounded-2xl shadow-lg border border-purple-200 mb-6 sm:mb-8 mx-auto max-w-4xl">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
                 ✨ {t.introduction.title} ✨
               </h2>
-              <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+              <p className="text-gray-600 text-sm sm:text-base lg:text-lg max-w-3xl mx-auto leading-relaxed">
                 {t.introduction.description}
               </p>
             </div>
           </div>
 
           {/* 9 Days Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
             {days.map((dayInfo) => (
               <div
                 key={dayInfo.day}
                 onClick={() => handleDayClick(dayInfo.day)}
-                className={`bg-gradient-to-br ${dayInfo.bgGradient} p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-purple-300 group`}
+                className={`bg-gradient-to-br ${dayInfo.bgGradient} p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-purple-300 group`}
               >
                 <div className="text-center">
                   {/* Day Number & Emoji */}
-                  <div className="flex items-center justify-center mb-4">
-                    <div className="text-6xl mr-2">{dayInfo.emoji}</div>
-                    <div className="text-4xl font-bold text-purple-700">
+                  <div className="flex items-center justify-center mb-3 sm:mb-4">
+                    <div className="text-4xl sm:text-5xl lg:text-6xl mr-2">{dayInfo.emoji}</div>
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-700">
                       {t.day} {dayInfo.day}
                     </div>
                   </div>
 
                   {/* Goddess Name */}
-                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2">
                     {currentLang === 'en' ? 'Maa ' : ''}{dayInfo.goddess}
                   </h3>
 
                   {/* Meaning */}
-                  <p className="text-gray-600 italic mb-3">
+                  <p className="text-sm sm:text-base text-gray-600 italic mb-3">
                     "{dayInfo.meaning}"
                   </p>
 
                   {/* Color */}
-                  <div className="mb-4">
-                    <span className="inline-block px-3 py-1 bg-white bg-opacity-70 rounded-full text-sm font-semibold text-gray-700">
+                  <div className="mb-3 sm:mb-4">
+                    <span className="inline-block px-2 sm:px-3 py-1 bg-white bg-opacity-70 rounded-full text-xs sm:text-sm font-semibold text-gray-700">
                       {t.color}: {dayInfo.color}
                     </span>
                   </div>
 
                   {/* Qualities */}
-                  <div className="flex flex-wrap justify-center gap-2 mb-4">
+                  <div className="flex flex-wrap justify-center gap-1 sm:gap-2 mb-3 sm:mb-4">
                     {dayInfo.qualities.map((quality, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium"
+                        className="px-2 sm:px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium"
                       >
                         {quality}
                       </span>
@@ -362,8 +407,8 @@ export default function NavratriCelebration() {
                   </div>
 
                   {/* CTA */}
-                  <div className="pt-4 border-t border-gray-200 border-opacity-50">
-                    <span className={`text-sm font-semibold ${dayInfo.day === 1 || dayInfo.day === 2 || dayInfo.day === 3 || dayInfo.day === 4 ? 'text-purple-600' : 'text-gray-500'} group-hover:text-purple-700 transition-colors`}>
+                  <div className="pt-3 sm:pt-4 border-t border-gray-200 border-opacity-50">
+                    <span className={`text-xs sm:text-sm font-semibold ${dayInfo.day === 1 || dayInfo.day === 2 || dayInfo.day === 3 || dayInfo.day === 4 ? 'text-purple-600' : 'text-gray-500'} group-hover:text-purple-700 transition-colors`}>
                       {dayInfo.day === 1 ? `🪔 ${t.exploreDay1}` : dayInfo.day === 2 ? `🪔 ${t.exploreDay2}` : dayInfo.day === 3 ? `🪔 ${t.exploreDay3}` : dayInfo.day === 4 ? `🪔 ${t.exploreDay4}` : `🔒 ${t.comingSoon}`}
                     </span>
                   </div>
@@ -373,45 +418,45 @@ export default function NavratriCelebration() {
           </div>
 
           {/* Spiritual Framework Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-purple-200">
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 border border-purple-200">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">
               🕉️ {t.spiritualFramework}
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {/* First Trilogy */}
               <div className="text-center">
-                <div className="text-4xl mb-4">🗡️</div>
-                <h3 className="text-xl font-bold text-red-600 mb-3">{t.days13}</h3>
-                <p className="text-gray-600 mb-2 font-semibold">{t.destructionNegativity}</p>
-                <p className="text-sm text-gray-500">
+                <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🗡️</div>
+                <h3 className="text-lg sm:text-xl font-bold text-red-600 mb-2 sm:mb-3">{t.days13}</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-2 font-semibold">{t.destructionNegativity}</p>
+                <p className="text-xs sm:text-sm text-gray-500">
                   {t.days13Desc}
                 </p>
               </div>
 
               {/* Second Trilogy */}
               <div className="text-center">
-                <div className="text-4xl mb-4">💰</div>
-                <h3 className="text-xl font-bold text-yellow-600 mb-3">{t.days46}</h3>
-                <p className="text-gray-600 mb-2 font-semibold">{t.abundanceProsperity}</p>
-                <p className="text-sm text-gray-500">
+                <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">💰</div>
+                <h3 className="text-lg sm:text-xl font-bold text-yellow-600 mb-2 sm:mb-3">{t.days46}</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-2 font-semibold">{t.abundanceProsperity}</p>
+                <p className="text-xs sm:text-sm text-gray-500">
                   {t.days46Desc}
                 </p>
               </div>
 
               {/* Third Trilogy */}
               <div className="text-center">
-                <div className="text-4xl mb-4">📚</div>
-                <h3 className="text-xl font-bold text-blue-600 mb-3">{t.days79}</h3>
-                <p className="text-gray-600 mb-2 font-semibold">{t.wisdomKnowledge}</p>
-                <p className="text-sm text-gray-500">
+                <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📚</div>
+                <h3 className="text-lg sm:text-xl font-bold text-blue-600 mb-2 sm:mb-3">{t.days79}</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-2 font-semibold">{t.wisdomKnowledge}</p>
+                <p className="text-xs sm:text-sm text-gray-500">
                   {t.days79Desc}
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-              <p className="text-center text-gray-700 italic">
+            <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
+              <p className="text-center text-sm sm:text-base text-gray-700 italic">
                 "{t.vijayadashami}" 🏆
               </p>
             </div>
