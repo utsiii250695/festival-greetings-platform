@@ -506,9 +506,6 @@ export default function NavratriDay2() {
             </div>
           </div>
         </div>
-            </div>
-          </div>
-        </div>
 
         {/* Navigation between days */}
         <div className="max-w-4xl mx-auto px-4 py-4">
