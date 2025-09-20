@@ -566,8 +566,8 @@ export default function NavratriDay5() {
           </div>
 
           {/* Navigation to Next Day */}
-          <div className="mt-12 text-center">
-            <div className="inline-block bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+          <div className="mt-8 sm:mt-12 text-center">
+            <div className="inline-block bg-white rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 w-full max-w-md mx-auto">
               <p className="text-gray-600 mb-4">{t.continueJourney}</p>
               <button
                 onClick={() => router.push(`/navratri-day-6?lang=${currentLang}`)}

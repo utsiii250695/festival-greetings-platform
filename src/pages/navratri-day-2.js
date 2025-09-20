@@ -379,7 +379,8 @@ export default function NavratriDay2() {
         <meta name="description" content="Explore the spiritual significance and sacred stories of Maa Brahmacharini on Day 2 of Navratri. Discover rituals, mantras, and modern relevance." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50">        {/* Header */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50">
+        {/* Header */}
         <div className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             {/* Mobile Header */}
@@ -420,8 +421,8 @@ export default function NavratriDay2() {
 
               <div className="text-center">
                 <div className="flex items-center justify-center space-x-2 mb-2">
-                  <div className="text-2xl sm:text-3xl">🏔️</div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{t.day1 || t.day2 || t.day3 || t.day4 || 'Day'}</h1>
+                  <div className="text-2xl sm:text-3xl">🧘‍♀️</div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{t.day2}</h1>
                 </div>
                 <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                   {t.goddess}
@@ -434,7 +435,7 @@ export default function NavratriDay2() {
                     <p className="text-xs text-gray-600 font-medium mb-1">{t.todaysColor}</p>
                     <div className="flex items-center justify-center space-x-2">
                       <div className="w-3 h-3 bg-white border-2 border-gray-400 rounded-full"></div>
-                      <span className="font-semibold text-gray-800 text-sm">{t.white || t.red || t.blue || t.yellow || 'Color'}</span>
+                      <span className="font-semibold text-gray-800 text-sm">{t.red}</span>
                     </div>
                   </div>
                 </div>
@@ -481,9 +482,9 @@ export default function NavratriDay2() {
               {/* Center - Main Title */}
               <div className="text-center">
                 <div className="flex items-center justify-center space-x-3 mb-1">
-                  <div className="text-3xl">🏔️</div>
+                  <div className="text-3xl">🧘‍♀️</div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-800">{t.day1 || t.day2 || t.day3 || t.day4 || 'Day'}</h1>
+                    <h1 className="text-2xl font-bold text-gray-800">{t.day2}</h1>
                   </div>
                 </div>
                 <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -498,7 +499,7 @@ export default function NavratriDay2() {
                   <p className="text-xs text-gray-600 font-medium mb-1">{t.todaysColor}</p>
                   <div className="flex items-center justify-center space-x-2">
                     <div className="w-4 h-4 bg-white border-2 border-gray-400 rounded-full"></div>
-                    <span className="font-semibold text-gray-800 text-sm">{t.white || t.red || t.blue || t.yellow || 'Color'}</span>
+                    <span className="font-semibold text-gray-800 text-sm">{t.red}</span>
                   </div>
                 </div>
               </div>
@@ -628,8 +629,8 @@ export default function NavratriDay2() {
           </div>
 
           {/* Navigation to Next Day */}
-          <div className="mt-12 text-center">
-            <div className="inline-block bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+          <div className="mt-8 sm:mt-12 text-center">
+            <div className="inline-block bg-white rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 w-full max-w-md mx-auto">
               <p className="text-gray-600 mb-4">{t.continueJourney}</p>
               <button
                 onClick={() => router.push(`/navratri-day-3?lang=${currentLang}`)}
