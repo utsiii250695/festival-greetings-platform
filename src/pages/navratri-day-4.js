@@ -379,11 +379,70 @@ export default function NavratriDay4() {
         <meta name="description" content="Explore the spiritual significance and sacred stories of Maa Kushmanda on Day 4 of Navratri. Discover rituals, mantras, and modern relevance." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
-        {/* Header */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">        {/* Header */}
         <div className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
+            {/* Mobile Header */}
+            <div className="lg:hidden">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={() => router.push(`/navratri-celebration?lang=${currentLang}`)}
+                  className="flex items-center px-3 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 border border-gray-200 shadow-sm text-sm"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  <span className="font-medium">{t.backToNavratri}</span>
+                </button>
+
+                {/* Language Selector */}
+                <div className="relative">
+                  <select
+                    value={currentLang}
+                    onChange={(e) => {
+                      setCurrentLang(e.target.value);
+                      const newQuery = { ...router.query, lang: e.target.value };
+                      router.push({ pathname: router.pathname, query: newQuery }, undefined, { shallow: true });
+                    }}
+                    className="appearance-none bg-white border border-gray-200 text-gray-700 px-3 py-2 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium shadow-sm text-sm"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.code} value={lang.code}>
+                        {lang.nativeName}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <div className="text-2xl sm:text-3xl">🏔️</div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{t.day1 || t.day2 || t.day3 || t.day4 || 'Day'}</h1>
+                </div>
+                <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                  {t.goddess}
+                </h2>
+                <p className="text-sm text-gray-600 italic mb-3">"{t.meaning}"</p>
+
+                {/* Today's Color - Mobile */}
+                <div className="inline-block bg-white rounded-lg px-3 py-2 border border-gray-200 shadow-sm">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600 font-medium mb-1">{t.todaysColor}</p>
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-3 h-3 bg-white border-2 border-gray-400 rounded-full"></div>
+                      <span className="font-semibold text-gray-800 text-sm">{t.white || t.red || t.blue || t.yellow || 'Color'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden lg:flex items-center justify-between">
               {/* Left side - Back button and Language selector */}
               <div className="flex items-center space-x-3">
                 <button
@@ -395,17 +454,19 @@ export default function NavratriDay4() {
                   </svg>
                   <span className="font-medium">{t.backToNavratri}</span>
                 </button>
+
                 {/* Language Selector */}
                 <div className="relative">
                   <select
                     value={currentLang}
                     onChange={(e) => {
                       setCurrentLang(e.target.value);
-                      router.push(`/navratri-day-4?lang=${e.target.value}`);
+                      const newQuery = { ...router.query, lang: e.target.value };
+                      router.push({ pathname: router.pathname, query: newQuery }, undefined, { shallow: true });
                     }}
-                    className="appearance-none bg-white border border-gray-200 text-gray-700 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 font-medium shadow-sm"
+                    className="appearance-none bg-white border border-gray-200 text-gray-700 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium shadow-sm"
                   >
-                    {languages.map(lang => (
+                    {languages.map((lang) => (
                       <option key={lang.code} value={lang.code}>
                         {lang.nativeName}
                       </option>
@@ -420,12 +481,12 @@ export default function NavratriDay4() {
               {/* Center - Main Title */}
               <div className="text-center">
                 <div className="flex items-center justify-center space-x-3 mb-1">
-                  <div className="text-3xl">☀️</div>
+                  <div className="text-3xl">🏔️</div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-800">{t.day4}</h1>
+                    <h1 className="text-2xl font-bold text-gray-800">{t.day1 || t.day2 || t.day3 || t.day4 || 'Day'}</h1>
                   </div>
                 </div>
-                <h2 className="text-xl font-semibold bg-gradient-to-r from-green-600 to-yellow-600 bg-clip-text text-transparent">
+                <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                   {t.goddess}
                 </h2>
                 <p className="text-sm text-gray-600 italic">"{t.meaning}"</p>
@@ -436,11 +497,14 @@ export default function NavratriDay4() {
                 <div className="text-center">
                   <p className="text-xs text-gray-600 font-medium mb-1">{t.todaysColor}</p>
                   <div className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 bg-green-500 border-2 border-gray-400 rounded-full"></div>
-                    <span className="font-semibold text-gray-800 text-sm">{t.green}</span>
+                    <div className="w-4 h-4 bg-white border-2 border-gray-400 rounded-full"></div>
+                    <span className="font-semibold text-gray-800 text-sm">{t.white || t.red || t.blue || t.yellow || 'Color'}</span>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
             </div>
           </div>
         </div>
@@ -506,16 +570,16 @@ export default function NavratriDay4() {
               {currentContent.title}
             </h2>
 
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {currentContent.content.map((section, index) => (
                 <div key={index} className="relative">
                   {/* Section */}
                   <div className="bg-gradient-to-r from-gray-50 to-green-50 rounded-xl p-6 mb-4">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center">
                       <span className="text-2xl mr-3">✨</span>
                       {section.heading}
                     </h3>
-                    <p className="text-gray-700 leading-relaxed text-lg">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base lg:text-lg">
                       {section.text}
                     </p>
                   </div>

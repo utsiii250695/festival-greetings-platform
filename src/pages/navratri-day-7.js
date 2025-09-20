@@ -506,16 +506,16 @@ export default function NavratriDay7() {
               {currentContent.title}
             </h2>
 
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {currentContent.content.map((section, index) => (
                 <div key={index} className="relative">
                   {/* Section */}
                   <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 mb-4 border border-orange-200">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center">
                       <span className="text-2xl mr-3">🔥</span>
                       {section.heading}
                     </h3>
-                    <p className="text-gray-700 leading-relaxed text-lg">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base lg:text-lg">
                       {section.text}
                     </p>
                   </div>

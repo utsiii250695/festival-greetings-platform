@@ -389,7 +389,67 @@ export default function NavratriDay1() {
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-50 to-gray-100 border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
+            {/* Mobile Header */}
+            <div className="lg:hidden">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={() => router.push(`/navratri-celebration?lang=${currentLang}`)}
+                  className="flex items-center px-3 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 border border-gray-200 shadow-sm text-sm"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  <span className="font-medium">{t.backToNavratri}</span>
+                </button>
+
+                {/* Language Selector */}
+                <div className="relative">
+                  <select
+                    value={currentLang}
+                    onChange={(e) => {
+                      setCurrentLang(e.target.value);
+                      const newQuery = { ...router.query, lang: e.target.value };
+                      router.push({ pathname: router.pathname, query: newQuery }, undefined, { shallow: true });
+                    }}
+                    className="appearance-none bg-white border border-gray-200 text-gray-700 px-3 py-2 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 font-medium shadow-sm text-sm"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.code} value={lang.code}>
+                        {lang.nativeName}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center space-x-2 mb-2">
+                  <div className="text-2xl sm:text-3xl">🏔️</div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{t.day1}</h1>
+                </div>
+                <h2 className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                  {t.goddess}
+                </h2>
+                <p className="text-sm text-gray-600 italic mb-3">"{t.meaning}"</p>
+
+                {/* Today's Color - Mobile */}
+                <div className="inline-block bg-white rounded-lg px-3 py-2 border border-gray-200 shadow-sm">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-600 font-medium mb-1">{t.todaysColor}</p>
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-3 h-3 bg-white border-2 border-gray-400 rounded-full"></div>
+                      <span className="font-semibold text-gray-800 text-sm">{t.white}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden lg:flex items-center justify-between">
               {/* Left side - Back button and Language selector */}
               <div className="flex items-center space-x-3">
                 <button
@@ -454,49 +514,50 @@ export default function NavratriDay1() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 ${
+                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 text-sm sm:text-base ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
                     : 'bg-white text-gray-600 shadow-md hover:shadow-lg border border-gray-200'
                 }`}
               >
-                <span className="text-lg mr-2">{tab.icon}</span>
-                {tab.label}
+                <span className="text-base sm:text-lg mr-1 sm:mr-2">{tab.icon}</span>
+                <span className="hidden xs:inline">{tab.label}</span>
+                <span className="xs:hidden">{tab.icon}</span>
               </button>
             ))}
           </div>
 
           {/* Content Area */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-200">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8">
               {currentContent.title}
             </h2>
 
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {currentContent.content.map((section, index) => (
                 <div key={index} className="relative">
                   {/* Section */}
-                  <div className="bg-gradient-to-r from-gray-50 to-purple-50 rounded-xl p-6 mb-4">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                      <span className="text-2xl mr-3">✨</span>
+                  <div className="bg-gradient-to-r from-gray-50 to-purple-50 rounded-xl p-4 sm:p-6 mb-3 sm:mb-4">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center">
+                      <span className="text-xl sm:text-2xl mr-2 sm:mr-3">✨</span>
                       {section.heading}
                     </h3>
-                    <p className="text-gray-700 leading-relaxed text-lg">
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base lg:text-lg">
                       {section.text}
                     </p>
                   </div>
 
                   {/* Anecdote Box */}
-                  <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-5 border-l-4 border-purple-500 ml-4">
+                  <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-4 sm:p-5 border-l-4 border-purple-500 ml-2 sm:ml-4">
                     <div className="flex items-start">
-                      <div className="text-2xl mr-3 flex-shrink-0">💡</div>
-                      <p className="text-purple-800 font-medium italic">
+                      <div className="text-xl sm:text-2xl mr-2 sm:mr-3 flex-shrink-0">💡</div>
+                      <p className="text-purple-800 font-medium italic text-sm sm:text-base">
                         {section.anecdote}
                       </p>
                     </div>
@@ -504,8 +565,8 @@ export default function NavratriDay1() {
 
                   {/* Divider */}
                   {index < currentContent.content.length - 1 && (
-                    <div className="flex justify-center my-8">
-                      <div className="w-24 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+                    <div className="flex justify-center my-6 sm:my-8">
+                      <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
                     </div>
                   )}
                 </div>
@@ -513,25 +574,25 @@ export default function NavratriDay1() {
             </div>
 
             {/* Call to Action */}
-            <div className="mt-12 text-center">
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-200">
-                <div className="text-4xl mb-4">🙏</div>
-                <h3 className="text-2xl font-bold text-purple-800 mb-4">
+            <div className="mt-8 sm:mt-12 text-center">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 sm:p-6 lg:p-8 border border-purple-200">
+                <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">🙏</div>
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-800 mb-3 sm:mb-4">
                   {t.blessing}
                 </h3>
-                <p className="text-purple-600 text-lg mb-6 max-w-2xl mx-auto">
+                <p className="text-purple-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 max-w-2xl mx-auto">
                   {t.blessingDesc}
                 </p>
 
-                <div className="bg-white rounded-xl p-6 shadow-lg max-w-md mx-auto">
-                  <h4 className="font-bold text-gray-800 mb-3">{t.todaysMantra}</h4>
-                  <div className="text-lg font-semibold text-purple-700 sanskrit mb-2">
+                <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg max-w-md mx-auto">
+                  <h4 className="font-bold text-gray-800 mb-3 text-sm sm:text-base">{t.todaysMantra}</h4>
+                  <div className="text-base sm:text-lg font-semibold text-purple-700 sanskrit mb-2">
                     ॐ देवी शैलपुत्र्यै नमः
                   </div>
-                  <div className="text-gray-600 italic">
+                  <div className="text-gray-600 italic text-sm sm:text-base">
                     "Om Devi Shailaputryai Namah"
                   </div>
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-xs sm:text-sm text-gray-500 mt-2">
                     {t.chantTimes}
                   </p>
                 </div>
@@ -540,12 +601,12 @@ export default function NavratriDay1() {
           </div>
 
           {/* Navigation to Next Day */}
-          <div className="mt-12 text-center">
-            <div className="inline-block bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-              <p className="text-gray-600 mb-4">{t.continueJourney}</p>
+          <div className="mt-8 sm:mt-12 text-center">
+            <div className="inline-block bg-white rounded-2xl shadow-lg p-4 sm:p-6 border border-gray-200 w-full max-w-md mx-auto">
+              <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{t.continueJourney}</p>
               <button
                 onClick={() => router.push(`/navratri-day-2?lang=${currentLang}`)}
-                className="px-8 py-4 bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm sm:text-base"
               >
                 {t.day2Button}
               </button>
